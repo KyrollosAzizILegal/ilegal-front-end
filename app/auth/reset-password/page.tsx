@@ -4,16 +4,14 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Input, Button } from "@nextui-org/react";
-import Link from "next/link"; // Import the Link component from Next.js
-import { useCreateUserMutation } from "@/redux/services/api";
+import Link from "next/link";
+import { useRouter } from "next/navigation"; // Import Next.js router
+import { useLoginMutation, useResetPassordMutation } from "@/redux/services/api"; // Import the login mutation hook
+import { setToken } from "@/utils";
 import { isFetchBaseQueryError } from "@/redux/store";
 
 // Define the validation schema using Yup
 const schema = yup.object().shape({
-  name: yup
-    .string()
-    .required("Name is required")
-    .min(3, "Name must be at least 3 characters"),
   email: yup
     .string()
     .required("Email is required")
@@ -21,40 +19,36 @@ const schema = yup.object().shape({
   password: yup
     .string()
     .required("Password is required")
-    .min(6, "Password must be at least 6 characters")
-    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .matches(
-      /[!@#$%^&*(),.?":{}|<>]/,
-      "Password must contain at least one special character"
-    ),
+    .min(6, "Password must be at least 6 characters"),
+  // .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+  // .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+  // .matches(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character'),
 });
 
 // Create a type from the Yup schema
 type FormData = yup.InferType<typeof schema>;
 
-// Helper function to check if the error is a FetchBaseQueryError
-
-
-export default function CreateUserForm() {
-  const [createUser, { isLoading, error, isSuccess }] = useCreateUserMutation();
+export default function LoginForm() {
+  const router = useRouter();
+  const [resetPassword, { isLoading, error }] = useResetPassordMutation(); // Use login mutation hook
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<FormData>({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<FormData> = async (formData) => {
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
-      await createUser(formData).unwrap();
-      console.log("User created successfully");
-      reset(); // Reset the form after successful submission
+      const response = await resetPassword(data).unwrap(); // Unwrap to get the result directly
+      // Assuming the response contains a token that needs to be stored in cookies
+      // setToken('token', response.)
+      console.log(response);
+      router.push("/"); // Navigate to the home page upon successful login
     } catch (err) {
-      console.error("Failed to create user:", err);
+      console.error("Login failed:", err); // Error will be handled in the UI
     }
   };
 
@@ -62,22 +56,6 @@ export default function CreateUserForm() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="max-w-md w-full p-6 bg-white shadow-md rounded-lg">
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Name Field */}
-          <div className="mb-4">
-            <Input
-              {...register("name")}
-              id="name"
-              type="text"
-              label="Name"
-              placeholder="Enter your name"
-              color={errors.name ? "danger" : "default"}
-              fullWidth
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-            )}
-          </div>
-
           {/* Email Field */}
           <div className="mb-4">
             <Input
@@ -120,8 +98,9 @@ export default function CreateUserForm() {
             color="primary"
             fullWidth
             isDisabled={isLoading}
+            isLoading={isLoading}
           >
-            {isLoading ? "Creating..." : "Create Account"}
+            {isLoading ? "Logging in..." : "Login"}
           </Button>
         </form>
 
@@ -138,22 +117,18 @@ export default function CreateUserForm() {
           </div>
         )}
 
-        {/* Success Message */}
-        {isSuccess && (
-          <div className="mt-4">
-            <p className="text-green-500 text-sm">User created successfully!</p>
-          </div>
-        )}
-
-        {/* Link to Login Page */}
-        <div className="mt-4 text-center">
+        {/* Link to Create Account */}
+        {/* <div className="mt-4 text-center">
           <p className="text-gray-600">
-            Already have an account?{" "}
-            <Link href="/" className="text-blue-500 hover:underline">
-              Log in here
+            Forget password?{" "}
+            <Link
+              href="/auth/forget-password"
+              className="text-blue-500 hover:underline"
+            >
+              Reset your password
             </Link>
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

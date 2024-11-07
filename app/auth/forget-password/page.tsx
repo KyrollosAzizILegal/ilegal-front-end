@@ -4,10 +4,9 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Input, Button } from "@nextui-org/react";
-import Link from "next/link";
 import { useRouter } from "next/navigation"; // Import Next.js router
-import { useLoginMutation } from "../redux/services/api"; // Import the login mutation hook
-import { setToken } from "@/utils";
+import Link from "next/link";
+import { useRequestPasswordResetMutation } from "@/redux/services/api"; // Import your reset password mutation hook
 import { isFetchBaseQueryError } from "@/redux/store";
 
 // Define the validation schema using Yup
@@ -16,42 +15,30 @@ const schema = yup.object().shape({
     .string()
     .required("Email is required")
     .email("Invalid email format"),
-  password: yup
-    .string()
-    .required("Password is required")
-    .min(6, "Password must be at least 6 characters"),
-  // .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
-  // .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
-  // .matches(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character'),
 });
 
 // Create a type from the Yup schema
-type FormData = yup.InferType<typeof schema>;
+type ResetFormData = yup.InferType<typeof schema>;
 
-export default function LoginForm() {
+export default function ResetPasswordForm() {
   const router = useRouter();
-  const [login, { isLoading, error }] = useLoginMutation(); // Use login mutation hook
+  const [requestPasswordReset, { isLoading, error }] =
+    useRequestPasswordResetMutation();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<ResetFormData>({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
+  const onSubmit: SubmitHandler<ResetFormData> = async (data) => {
     try {
-      const response = await login(data).unwrap(); // Unwrap to get the result directly
-      // Assuming the response contains a token that needs to be stored in cookies
-      // setToken('token', response.)
-      console.log(response);
-      // Store token in cookies for 7 days
-      setToken("token", response.access_token , 7);
-      // Navigate to the home page upon successful login
-      window.location.assign('/home') // Navigate to the home page upon successful login
+      const response = await requestPasswordReset(data).unwrap(); // Unwrap to handle the result directly
+      router.push("/auth/otp");
     } catch (err) {
-      console.error("Login failed:", err); // Error will be handled in the UI
+      console.error("Password reset request failed:", err); // Log errors if any
     }
   };
 
@@ -77,24 +64,6 @@ export default function LoginForm() {
             )}
           </div>
 
-          {/* Password Field */}
-          <div className="mb-4">
-            <Input
-              {...register("password")}
-              id="password"
-              type="password"
-              label="Password"
-              placeholder="Enter your password"
-              color={errors.password ? "danger" : "default"}
-              fullWidth
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
-
           {/* Submit Button */}
           <Button
             type="submit"
@@ -103,7 +72,7 @@ export default function LoginForm() {
             isDisabled={isLoading}
             isLoading={isLoading}
           >
-            {isLoading ? "Logging in..." : "Login"}
+            {isLoading ? "Sending..." : "Reset Password"}
           </Button>
         </form>
 
@@ -120,15 +89,12 @@ export default function LoginForm() {
           </div>
         )}
 
-        {/* Link to Create Account */}
+        {/* Link to Login */}
         <div className="mt-4 text-center">
           <p className="text-gray-600">
-            Forget password?{" "}
-            <Link
-              href="/auth/forget-password"
-              className="text-blue-500 hover:underline"
-            >
-              Reset your password
+            Remembered your password?{" "}
+            <Link href="/" className="text-blue-500 hover:underline">
+              Login here
             </Link>
           </p>
         </div>
