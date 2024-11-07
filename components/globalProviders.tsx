@@ -4,7 +4,11 @@ import React from "react";
 import { Provider } from "react-redux";
 import { store } from "../redux/store";
 
-const GlobalProviders = ({ children }: any) => {
+const GlobalProviders = ({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) => {
   return (
     <Provider store={store}>
       <NextUIProvider>{children}</NextUIProvider>

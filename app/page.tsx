@@ -5,7 +5,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Input, Button } from "@nextui-org/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; // Import Next.js router
 import { useLoginMutation } from "../redux/services/api"; // Import the login mutation hook
 import { setToken } from "@/utils";
 import { isFetchBaseQueryError } from "@/redux/store";
@@ -29,7 +28,6 @@ const schema = yup.object().shape({
 type FormData = yup.InferType<typeof schema>;
 
 export default function LoginForm() {
-  const router = useRouter();
   const [login, { isLoading, error }] = useLoginMutation(); // Use login mutation hook
 
   const {

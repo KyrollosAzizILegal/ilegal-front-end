@@ -13,6 +13,7 @@ import {
 } from "@nextui-org/react";
 import { useGetAllEmployeesQuery } from "@/redux/services/api";
 import { DeleteEmployeeButton } from "./deleteEmployeeComponent";
+import { Employee } from "@/types";
 
 export const EmployeesTable = () => {
   const { data, error, isLoading } = useGetAllEmployeesQuery({});
@@ -47,7 +48,7 @@ export const EmployeesTable = () => {
           loadingState={isLoading ? "loading" : "idle"}
           loadingContent={<Spinner label="Loading employees..." />}
         >
-          {paginatedEmployees.map((employee: any, index: number) => (
+          {paginatedEmployees.map((employee: Employee, index: number) => (
             <TableRow key={employee.id}>
               <TableCell>{(page - 1) * rowsPerPage + index + 1}.</TableCell>
               <TableCell>{employee.id}</TableCell>

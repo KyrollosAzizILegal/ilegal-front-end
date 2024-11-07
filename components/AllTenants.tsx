@@ -12,6 +12,7 @@ import {
   Button,
 } from "@nextui-org/react";
 import { useGetAllTenantsQuery } from "@/redux/services/api";
+import { Tenant } from "@/types";
 
 export const TenantTable = () => {
   const [page, setPage] = useState(1);
@@ -38,7 +39,7 @@ export const TenantTable = () => {
           <TableColumn>Actions</TableColumn>
         </TableHeader>
         <TableBody>
-          {tenants.map((tenant: any, index: number) => (
+          {tenants.map((tenant: Tenant, index: number) => (
             <TableRow key={tenant.id}>
               <TableCell>{(page - 1) * limit + index + 1}.</TableCell>
               <TableCell>{tenant.id}</TableCell>
@@ -66,5 +67,3 @@ export const TenantTable = () => {
     </div>
   );
 };
-
-

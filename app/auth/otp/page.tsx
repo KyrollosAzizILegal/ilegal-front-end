@@ -6,7 +6,6 @@ import * as yup from "yup";
 import OTPInput from "react-otp-input";
 import { Button } from "@nextui-org/react";
 import { useRouter } from "next/navigation"; // Import Next.js router
-import Link from "next/link";
 import { useVerifyOtpMutation } from "@/redux/services/api"; // Import your OTP verification mutation hook
 import { isFetchBaseQueryError } from "@/redux/store";
 
@@ -37,6 +36,7 @@ export default function OTPVerificationForm() {
     try {
       console.log("OTP Data:", data);
       const response = await verifyOtp({ otp: data.otp }).unwrap();
+      console.log(response)
       router.push('/auth/reset-password');
     } catch (err) {
       console.error("OTP verification failed:", err); // Handle OTP verification error

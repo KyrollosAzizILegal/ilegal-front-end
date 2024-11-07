@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Button,
   Modal,
@@ -7,7 +7,6 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
-  Spinner,
 } from "@nextui-org/react";
 import { useDeleteEmployeeMutation } from "@/redux/services/api";
 import { isFetchBaseQueryError } from "@/redux/store";

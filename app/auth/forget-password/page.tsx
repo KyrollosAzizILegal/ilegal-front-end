@@ -36,6 +36,7 @@ export default function ResetPasswordForm() {
   const onSubmit: SubmitHandler<ResetFormData> = async (data) => {
     try {
       const response = await requestPasswordReset(data).unwrap(); // Unwrap to handle the result directly
+      console.log(response);
       router.push("/auth/otp");
     } catch (err) {
       console.error("Password reset request failed:", err); // Log errors if any

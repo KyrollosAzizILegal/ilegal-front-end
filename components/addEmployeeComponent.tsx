@@ -10,7 +10,6 @@ import {
   Button,
   Input,
   useDisclosure,
-  Spinner,
 } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -38,7 +37,7 @@ type FormData = yup.InferType<typeof schema>;
 
 const AddEmployeeModal = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [createEmployee, { isLoading, error, isSuccess }] = useCreateUserMutation();
+  const [createEmployee, { isLoading, error }] = useCreateUserMutation();
 
   const {
     register,

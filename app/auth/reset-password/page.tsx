@@ -4,10 +4,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Input, Button } from "@nextui-org/react";
-import Link from "next/link";
 import { useRouter } from "next/navigation"; // Import Next.js router
-import { useLoginMutation, useResetPassordMutation } from "@/redux/services/api"; // Import the login mutation hook
-import { setToken } from "@/utils";
+import { useResetPassordMutation } from "@/redux/services/api"; // Import the login mutation hook
 import { isFetchBaseQueryError } from "@/redux/store";
 
 // Define the validation schema using Yup
