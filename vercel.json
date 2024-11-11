@@ -5,10 +5,6 @@
     "public": false,
     "ignoreCommand": "git diff --quiet HEAD^ HEAD ./",
     "functions": {
-      "api/**/*.ts": {
-        "memory": 1024,
-        "maxDuration": 10
-      }
     },
     "headers": [
       {
