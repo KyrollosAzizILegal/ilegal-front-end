@@ -4,8 +4,6 @@
     "framework": "nextjs",
     "public": false,
     "ignoreCommand": "git diff --quiet HEAD^ HEAD ./",
-    "functions": {
-    },
     "headers": [
       {
         "source": "/(.*)",
