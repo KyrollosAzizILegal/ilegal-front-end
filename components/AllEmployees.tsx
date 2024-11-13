@@ -13,24 +13,21 @@ import {
 } from "@nextui-org/react";
 import { useGetAllEmployeesQuery } from "@/redux/services/api";
 import { DeleteEmployeeButton } from "./deleteEmployeeComponent";
+import UpdateEmployeeButton from "./UpdateEmpolyeeButton";
 import { Employee } from "@/types";
 
 export const EmployeesTable = () => {
-  const { data, error, isLoading } = useGetAllEmployeesQuery({});
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
+
+  // Fetch employees based on the current page and rowsPerPage
+  const { data, error, isLoading } = useGetAllEmployeesQuery({ page, limit: rowsPerPage });
 
   if (isLoading) return <Spinner label="Loading employees..." />;
   if (error) return <p>Error loading employees.</p>;
 
-  const employees = data || [];
-
-  // Calculate pagination
-  const totalPages = Math.ceil(employees.length / rowsPerPage);
-  const paginatedEmployees = employees.slice(
-    (page - 1) * rowsPerPage,
-    page * rowsPerPage
-  );
+  const employees = data?.data || [];
+  const totalPages = data?.metaData?.totalPages || 1; // Assume metadata contains the total pages
 
   return (
     <div className="p-16 flex flex-col gap-5">
@@ -48,7 +45,7 @@ export const EmployeesTable = () => {
           loadingState={isLoading ? "loading" : "idle"}
           loadingContent={<Spinner label="Loading employees..." />}
         >
-          {paginatedEmployees.map((employee: Employee, index: number) => (
+          {employees.map((employee: Employee, index: number) => (
             <TableRow key={employee.id}>
               <TableCell>{(page - 1) * rowsPerPage + index + 1}.</TableCell>
               <TableCell>{employee.id}</TableCell>
@@ -57,10 +54,8 @@ export const EmployeesTable = () => {
               <TableCell>
                 {new Date(employee.createdAt).toLocaleDateString()}
               </TableCell>
-              <TableCell className="felx gap-3 items-center">
-                <Button color="primary" size="sm">
-                  View
-                </Button>
+              <TableCell className="flex gap-3 items-center">
+                <UpdateEmployeeButton id={employee.id} name={employee.name} />
                 <DeleteEmployeeButton employeeId={employee.id} />
               </TableCell>
             </TableRow>

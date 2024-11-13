@@ -13,7 +13,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["SuperAdmin"], // Define your tag types here
+  tagTypes: ["SuperAdmin", "Tenants"], // Define your tag types here
   endpoints: (builder) => ({
     // super admin
     createUser: builder.mutation({
@@ -24,10 +24,21 @@ export const api = createApi({
       }),
       invalidatesTags: ["SuperAdmin"],
     }),
+    updateEmployee: builder.mutation({
+      query: ({ id, ...updatedData }) => ({
+        url: `/super-admin/${id}`,
+        method: "PATCH",
+        body: updatedData,
+      }),
+      invalidatesTags: ["SuperAdmin"],
+    }),
+    // In your api file
     getAllEmployees: builder.query({
-      query: () => "/super-admin",
+      query: ({ page = 1, limit = 5 }) =>
+        `/super-admin?page=${page}&limit=${limit}`,
       providesTags: ["SuperAdmin"],
     }),
+
     deleteEmployee: builder.mutation({
       query: (id) => ({
         url: `/super-admin/${id}`,
@@ -69,7 +80,19 @@ export const api = createApi({
       query: ({ page = 1, limit = 2 }) =>
         `/tenants/all/?page=${page}&limit=${limit}`,
     }),
-    
+    searchTenants: builder.query({
+      query: ({ searchTerm }) =>
+        `/tenants/search?search=${searchTerm}`,
+      providesTags: ["Tenants"],
+    }),
+    // In your api file
+    deleteTenant: builder.mutation({
+      query: (id) => ({
+        url: `/tenants/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Tenants"],
+    }),
   }),
 });
 
@@ -81,5 +104,8 @@ export const {
   useResetPassordMutation,
   useGetAllTenantsQuery,
   useGetAllEmployeesQuery,
-  useDeleteEmployeeMutation
+  useDeleteEmployeeMutation,
+  useUpdateEmployeeMutation,
+  useSearchTenantsQuery,
+  useDeleteTenantMutation,
 } = api;
