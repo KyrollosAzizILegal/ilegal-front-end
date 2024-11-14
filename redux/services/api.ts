@@ -34,8 +34,10 @@ export const api = createApi({
     }),
     // In your api file
     getAllEmployees: builder.query({
-      query: ({ page = 1, limit = 5 }) =>
-        `/super-admin?page=${page}&limit=${limit}`,
+      query: ({ page = 1, limit = 5, name = "" }) => {
+        const nameQuery = name ? `&name=${name}` : "";
+        return `/super-admin?page=${page}&limit=${limit}${nameQuery}`;
+      },
       providesTags: ["SuperAdmin"],
     }),
 
@@ -76,16 +78,29 @@ export const api = createApi({
       }),
     }),
     // tenants endpoints
-    getAllTenants: builder.query({
-      query: ({ page = 1, limit = 2 }) =>
-        `/tenants/all/?page=${page}&limit=${limit}`,
+    createTenant: builder.mutation({
+      query: (formData) => ({
+        url: "/tenants",
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["Tenants"],
     }),
-    searchTenants: builder.query({
-      query: ({ searchTerm }) =>
-        `/tenants/search?search=${searchTerm}`,
+    getAllTenants: builder.query({
+      query: ({ page = 1, limit = 5, name = "" }) => {
+        const nameQuery = name ? `&name=${name}` : "";
+        return `/tenants/all/?page=${page}&limit=${limit}${nameQuery}`;
+      },
       providesTags: ["Tenants"],
     }),
-    // In your api file
+    updateTenant: builder.mutation({
+      query: ({ id, name }) => ({
+        url: `/tenants/${id}`,
+        method: "PATCH",
+        body: { name },
+      }),
+      invalidatesTags: ["Tenants"], // Invalidate "Tenants" to refresh data
+    }),
     deleteTenant: builder.mutation({
       query: (id) => ({
         url: `/tenants/${id}`,
@@ -106,6 +121,7 @@ export const {
   useGetAllEmployeesQuery,
   useDeleteEmployeeMutation,
   useUpdateEmployeeMutation,
-  useSearchTenantsQuery,
+  useCreateTenantMutation,
   useDeleteTenantMutation,
+  useUpdateTenantMutation
 } = api;

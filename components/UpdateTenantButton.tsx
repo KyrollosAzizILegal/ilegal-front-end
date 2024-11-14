@@ -1,32 +1,38 @@
 import React from "react";
 import {
+  Button,
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Button,
   Input,
   useDisclosure,
 } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useUpdateEmployeeMutation } from "@/redux/services/api";
+import { useUpdateTenantMutation } from "@/redux/services/api";
 
-// Define validation schema for the form
+// Validation schema
 const schema = yup.object().shape({
-  name: yup.string().required("Name is required").min(3, "Name must be at least 3 characters"),
+  name: yup
+    .string()
+    .required("Name is required")
+    .min(3, "Name must be at least 3 characters"),
 });
 
-type UpdateEmployeeButtonProps = {
-  id: string;
-  name: string;
+type UpdateTenantButtonProps = {
+  tenantId: string;
+  tenantName: string;
 };
 
-const UpdateEmployeeButton: React.FC<UpdateEmployeeButtonProps> = ({ id, name }) => {
+const UpdateTenantButton: React.FC<UpdateTenantButtonProps> = ({
+  tenantId,
+  tenantName,
+}) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [updateEmployee, { isLoading, error }] = useUpdateEmployeeMutation();
+  const [updateTenant, { isLoading, error }] = useUpdateTenantMutation();
 
   const {
     register,
@@ -35,23 +41,24 @@ const UpdateEmployeeButton: React.FC<UpdateEmployeeButtonProps> = ({ id, name })
     formState: { errors },
   } = useForm<{ name: string }>({
     resolver: yupResolver(schema),
-    defaultValues: { name }, // Prefill the input with the current name
+    defaultValues: { name: tenantName }, // Prefill with current tenant name
   });
 
-  // Reset the form whenever the modal closes
-  const handleClose = () => {
-    reset({ name }); // Reset to the initial name value
-    onOpenChange(); // Close the modal
-  };
-
+  // Handle form submission
   const onSubmit = async (data: { name: string }) => {
     try {
-      await updateEmployee({ id, ...data }).unwrap();
-      reset({ name: data.name }); // Reset with the updated name after submission
-      handleClose(); // Close the modal
-    } catch (error) {
-      console.error("Failed to update employee:", error);
+      await updateTenant({ id: tenantId, name: data.name }).unwrap();
+      reset({ name: data.name }); // Reset form with the updated name
+      onOpenChange(); // Close the modal after update
+    } catch (err) {
+      console.error("Failed to update tenant:", err);
     }
+  };
+
+  // Handle modal close and reset the form to initial values if no update
+  const handleClose = () => {
+    reset({ name: tenantName }); // Reset to original name if closed without submitting
+    onOpenChange(); // Close the modal
   };
 
   return (
@@ -61,26 +68,30 @@ const UpdateEmployeeButton: React.FC<UpdateEmployeeButtonProps> = ({ id, name })
         Update
       </Button>
 
-      {/* Modal for updating employee name */}
-      <Modal isOpen={isOpen} onOpenChange={handleClose} isDismissable={false} placement="top-center">
+      {/* Update Tenant Modal */}
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={handleClose}
+        isDismissable={false}
+        placement="top-center"
+      >
         <ModalContent>
           {() => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Update Employee
+                Update Tenant Name
               </ModalHeader>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <ModalBody>
                   <Input
                     {...register("name")}
                     label="Name"
-                    placeholder="Enter employee name"
+                    placeholder="Enter tenant name"
                     variant="bordered"
                     color={errors.name ? "danger" : "default"}
                     isInvalid={!!errors.name}
                     errorMessage={errors.name?.message}
                   />
-                  {/* Error message from API if update fails */}
                   {error && (
                     <div className="mt-4">
                       <p className="text-red-500 text-sm">
@@ -93,8 +104,13 @@ const UpdateEmployeeButton: React.FC<UpdateEmployeeButtonProps> = ({ id, name })
                   <Button color="danger" variant="flat" onPress={handleClose}>
                     Close
                   </Button>
-                  <Button color="primary" type="submit" isDisabled={isLoading} isLoading={isLoading}>
-                    Update Employee
+                  <Button
+                    color="primary"
+                    type="submit"
+                    isDisabled={isLoading}
+                    isLoading={isLoading}
+                  >
+                    Update Tenant
                   </Button>
                 </ModalFooter>
               </form>
@@ -106,4 +122,4 @@ const UpdateEmployeeButton: React.FC<UpdateEmployeeButtonProps> = ({ id, name })
   );
 };
 
-export default UpdateEmployeeButton;
+export default UpdateTenantButton;

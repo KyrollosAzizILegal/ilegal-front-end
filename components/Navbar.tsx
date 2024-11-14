@@ -1,8 +1,9 @@
 // components/Navbar.tsx
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@nextui-org/react";
 import AddEmployeeModal from "./addEmployeeComponent";
+import AddTenantModal from "./addTenantButton";
+import UserDropdown from "./profileComponent";
 
 const Navbar = () => {
 
@@ -21,9 +22,9 @@ const Navbar = () => {
 
       {/* Buttons */}
       <div className="flex space-x-4">
-        <Button color="primary">Add Tenant</Button>
-
+        <AddTenantModal/>
         <AddEmployeeModal/>
+        <UserDropdown/>
       </div>
     </nav>
   );

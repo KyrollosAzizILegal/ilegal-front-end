@@ -26,6 +26,7 @@ const DeleteTenantButton: React.FC<DeleteTenantButtonProps> = ({ tenantId, tenan
       onOpenChange(); // Close modal after successful deletion
     } catch (err) {
       setError("Failed to delete tenant. Please try again.");
+      console.log(err);
     }
   };
 

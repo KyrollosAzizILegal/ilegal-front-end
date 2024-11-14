@@ -9,26 +9,39 @@ import {
   TableCell,
   Pagination,
   Spinner,
-  Button,
   Input,
 } from "@nextui-org/react";
-import { useGetAllTenantsQuery, useSearchTenantsQuery } from "@/redux/services/api";
+import { useGetAllTenantsQuery } from "@/redux/services/api";
 import { Tenant } from "@/types";
 import DeleteTenantButton from "./DeleteTenantButton";
+import UpdateTenantButton from "./UpdateTenantButton";
 
 export const TenantTable = () => {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
   const limit = 5;
 
-  // Fetch tenants based on the search term
-  const { data, error, isLoading } = searchTerm
-    ? useSearchTenantsQuery({ searchTerm })
-    : useGetAllTenantsQuery({ page, limit });
-
+  // Debounce searchTerm to prevent excessive API calls
   useEffect(() => {
-    setPage(1); // Reset to the first page whenever the search term changes
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500); // 500ms debounce delay
+
+    return () => clearTimeout(handler);
   }, [searchTerm]);
+
+  // Fetch tenants based on the debounced search term and page
+  const { data, error, isLoading } = useGetAllTenantsQuery({
+    page,
+    limit,
+    name: debouncedSearchTerm || undefined, // Only pass if debouncedSearchTerm is not empty
+  });
+
+  // Reset to the first page whenever the search term changes
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearchTerm]);
 
   if (isLoading) return <Spinner label="Loading tenants..." />;
   if (error) return <p>Error loading tenants.</p>;
@@ -39,7 +52,7 @@ export const TenantTable = () => {
   return (
     <div className="p-16 flex flex-col gap-5">
       <h3 className="text-gray-800 mb-4 text-5xl font-semibold">Tenants</h3>
-      
+
       {/* Search Input */}
       <Input
         isClearable
@@ -67,10 +80,14 @@ export const TenantTable = () => {
               <TableCell>{tenant.usersCount}</TableCell>
               <TableCell>{tenant.roleName}</TableCell>
               <TableCell>
-                <Button color="primary" size="sm">
-                  View
-                </Button>
-                <DeleteTenantButton tenantId={tenant.id} tenantName={tenant.name} />
+                <UpdateTenantButton
+                  tenantId={tenant.id}
+                  tenantName={tenant.name}
+                />
+                <DeleteTenantButton
+                  tenantId={tenant.id}
+                  tenantName={tenant.name}
+                />
               </TableCell>
             </TableRow>
           ))}

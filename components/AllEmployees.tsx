@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableHeader,
@@ -9,7 +9,7 @@ import {
   TableCell,
   Pagination,
   Spinner,
-  Button,
+  Input,
 } from "@nextui-org/react";
 import { useGetAllEmployeesQuery } from "@/redux/services/api";
 import { DeleteEmployeeButton } from "./deleteEmployeeComponent";
@@ -18,20 +18,50 @@ import { Employee } from "@/types";
 
 export const EmployeesTable = () => {
   const [page, setPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
   const rowsPerPage = 5;
 
-  // Fetch employees based on the current page and rowsPerPage
-  const { data, error, isLoading } = useGetAllEmployeesQuery({ page, limit: rowsPerPage });
+  // Debounce the search term to reduce API calls
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500); // 500ms debounce delay
+
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
+
+  // Fetch employees based on the current page, rowsPerPage, and debounced search term
+  const { data, error, isLoading } = useGetAllEmployeesQuery({
+    page,
+    limit: rowsPerPage,
+    name: debouncedSearchTerm || undefined, // Pass search term only if it's not empty
+  });
+
+  // Reset to the first page whenever the search term changes
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearchTerm]);
 
   if (isLoading) return <Spinner label="Loading employees..." />;
   if (error) return <p>Error loading employees.</p>;
 
   const employees = data?.data || [];
-  const totalPages = data?.metaData?.totalPages || 1; // Assume metadata contains the total pages
+  const totalPages = data?.metaData?.totalPages || 1;
 
   return (
     <div className="p-16 flex flex-col gap-5">
       <h3 className="text-gray-800 mb-4 text-5xl font-semibold">Employees</h3>
+
+      {/* Search Input */}
+      <Input
+        isClearable
+        placeholder="Search by employee name..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        onClear={() => setSearchTerm("")} // Clear search term to load all employees
+      />
+
       <Table aria-label="Employees Table">
         <TableHeader>
           <TableColumn>NO.</TableColumn>
@@ -62,6 +92,7 @@ export const EmployeesTable = () => {
           ))}
         </TableBody>
       </Table>
+      
       <Pagination
         isCompact
         showControls
