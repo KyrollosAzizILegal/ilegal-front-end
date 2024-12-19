@@ -1,8 +1,6 @@
 // components/Navbar.tsx
 import Image from "next/image";
 import Link from "next/link";
-import AddEmployeeModal from "./addEmployeeComponent";
-import AddTenantModal from "./addTenantButton";
 import UserDropdown from "./profileComponent";
 
 const Navbar = () => {
@@ -22,8 +20,6 @@ const Navbar = () => {
 
       {/* Buttons */}
       <div className="flex space-x-4">
-        <AddTenantModal/>
-        <AddEmployeeModal/>
         <UserDropdown/>
       </div>
     </nav>

@@ -47,7 +47,7 @@ export default function LoginForm() {
       // Store token in cookies for 7 days
       setToken("token", response.access_token , 7);
       // Navigate to the home page upon successful login
-      window.location.assign('/home') // Navigate to the home page upon successful login
+      window.location.reload(); // Navigate to the home page upon successful login
     } catch (err) {
       console.error("Login failed:", err); // Error will be handled in the UI
     }

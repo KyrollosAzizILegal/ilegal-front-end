@@ -15,8 +15,12 @@ import { useGetAllEmployeesQuery } from "@/redux/services/api";
 import { DeleteEmployeeButton } from "./deleteEmployeeComponent";
 import UpdateEmployeeButton from "./UpdateEmpolyeeButton";
 import { Employee } from "@/types";
+import AddEmployeeModal from "./addEmployeeComponent";
+import { usePathname } from "next/navigation";
 
 export const EmployeesTable = () => {
+  const path = usePathname();
+  const isPathRight = path === "/home/employees";
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
@@ -50,17 +54,22 @@ export const EmployeesTable = () => {
   const totalPages = data?.metaData?.totalPages || 1;
 
   return (
-    <div className="p-16 flex flex-col gap-5">
-      <h3 className="text-gray-800 mb-4 text-5xl font-semibold">Employees</h3>
+    <div className="flex flex-col gap-5">
+      <div className="flex items-center justify-between">
+        <h3 className=" mb-4 text-5xl font-semibold text-white">Employees</h3>
+        {isPathRight && <AddEmployeeModal />}
+      </div>
 
       {/* Search Input */}
-      <Input
-        isClearable
-        placeholder="Search by employee name..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        onClear={() => setSearchTerm("")} // Clear search term to load all employees
-      />
+      {isPathRight && (
+        <Input
+          isClearable
+          placeholder="Search by employee name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onClear={() => setSearchTerm("")} // Clear search term to load all employees
+        />
+      )}
 
       <Table aria-label="Employees Table">
         <TableHeader>
@@ -69,7 +78,7 @@ export const EmployeesTable = () => {
           <TableColumn>Name</TableColumn>
           <TableColumn>Email</TableColumn>
           <TableColumn>Created At</TableColumn>
-          <TableColumn>Actions</TableColumn>
+          <TableColumn>{isPathRight && "Actions"}</TableColumn>
         </TableHeader>
         <TableBody
           loadingState={isLoading ? "loading" : "idle"}
@@ -85,23 +94,32 @@ export const EmployeesTable = () => {
                 {new Date(employee.createdAt).toLocaleDateString()}
               </TableCell>
               <TableCell className="flex gap-3 items-center">
-                <UpdateEmployeeButton id={employee.id} name={employee.name} />
-                <DeleteEmployeeButton employeeId={employee.id} />
+                {isPathRight && (
+                  <>
+                    <UpdateEmployeeButton
+                      id={employee.id}
+                      name={employee.name}
+                    />
+                    <DeleteEmployeeButton employeeId={employee.id} />
+                  </>
+                )}
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-      
-      <Pagination
-        isCompact
-        showControls
-        showShadow
-        color="secondary"
-        page={page}
-        total={totalPages}
-        onChange={(newPage) => setPage(newPage)}
-      />
+
+      <div className="flex justify-center">
+        <Pagination
+          isCompact
+          showControls
+          showShadow
+          color="secondary"
+          page={page}
+          total={totalPages}
+          onChange={(newPage) => setPage(newPage)}
+        />
+      </div>
     </div>
   );
 };
