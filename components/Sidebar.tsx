@@ -61,7 +61,7 @@ const navLinks = [
 
 const Sidebar = () => {
   return (
-    <aside className="w-fit bg-gray-800 h-full flex flex-col items-center py-4 space-y-8 text-white justify-between rounded-3xl">
+    <aside className="w-fit bg-gray-800 h-full flex flex-col items-center py-4 space-y-8 text-white justify-between">
       <div className="text-lg font-bold">Logo</div>
       <nav className="flex flex-col items-center space-y-10">
         {navLinks.map((link, index) => (

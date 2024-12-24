@@ -15,6 +15,10 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        deepBlue: '#114B7E', // Name for #114B7E
+        lightBlue: '#1F88E4', // Name for #1F88E4
+        deepRed: '#770F2E',  // Name for #770F2E
+        brightRed: '#DD1C55', // Name for #DD1C55
       },
     },
   },
