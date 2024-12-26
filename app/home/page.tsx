@@ -23,9 +23,12 @@ const sampleData = [
   { name: "Jul", created: 34, translation: 43, summarization: 34 },
 ];
 
-const page = () => {
+const Page = () => {
   const dispatch = useDispatch();
-  dispatch(setHeader("Home"));
+
+  React.useEffect(() => {
+    dispatch(setHeader("Home"));
+  }, [dispatch]);
   return (
     <div className=" min-h-screen space-y-8 text-white flex-grow">
       {/* Top Cards */}
@@ -165,4 +168,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

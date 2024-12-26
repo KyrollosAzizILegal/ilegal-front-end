@@ -15,9 +15,12 @@ const templates = [
   { id: 6, name: "Tenant Name", type: "Secondary" },
 ];
 
-const page = () => {
+const Page = () => {
   const dispatch = useDispatch();
-  dispatch(setHeader("Templates"));
+
+  React.useEffect(() => {
+    dispatch(setHeader("Templates"));
+  }, [dispatch]);
   return (
     <div className="bg-white shadow-md rounded-lg p-6 mx-auto flex-grow">
       {/* Header */}
@@ -72,4 +75,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

@@ -3,7 +3,7 @@ import { setHeader } from '@/redux/services/header';
 import React from 'react'
 import { useDispatch } from 'react-redux';
 
-type Props = {}
+// type Props = {}
 
 const billsData = [
     { client: "Client A", paid: 700, total: 1000, color: "bg-blue-500" },
@@ -15,9 +15,11 @@ const billsData = [
     { client: "Client A", paid: 700, total: 1000, color: "bg-blue-500" },
   ];
 
-const page = (props: Props) => {
+const Page = (/**props: Props */) => {
     const dispatch = useDispatch();
-  dispatch(setHeader("Bills and Invoices"));
+  React.useEffect(() => {
+    dispatch(setHeader("Bills and Invoices"));
+  }, [dispatch]);
   return (
     <div className="bg-white p-6 rounded-lg shadow-md flex-grow">
     <h3 className="text-lg font-bold mb-4">Bills and Invoices</h3>
@@ -43,4 +45,4 @@ const page = (props: Props) => {
   )
 }
 
-export default page
+export default Page

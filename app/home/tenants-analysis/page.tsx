@@ -44,11 +44,14 @@ const tenantsData = [
   },
 ];
 
-type Props = {};
+// type Props = {};
 
-const page = (props: Props) => {
+const Page = (/**props: Props */) => {
   const dispatch = useDispatch();
-  dispatch(setHeader("Tenants Analysis"));
+
+  React.useEffect(() => {
+    dispatch(setHeader("Tenants Analysis"));
+  }, [dispatch]);
   return (
     <div className="bg-white p-6 rounded-lg shadow-md flex-grow">
       <h3 className="text-lg font-bold mb-4">Tenants</h3>
@@ -71,4 +74,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;

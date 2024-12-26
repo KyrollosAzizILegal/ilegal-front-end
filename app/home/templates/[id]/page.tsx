@@ -1,9 +1,9 @@
 import { Button } from "@nextui-org/react";
 import React from "react";
 
-type Props = {};
+// type Props = {};
 
-const page = (props: Props) => {
+const Page = (/**props: Props */) => {
   return (
     <div className="bg-white shadow-lg rounded-lg mx-auto p-6">
       {/* Header */}
@@ -19,7 +19,7 @@ const page = (props: Props) => {
       <div className="text-gray-700 text-base leading-relaxed space-y-4">
         <p>
           Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
+          industry. Lorem Ipsum has been the industrys standard dummy text ever
           since the 1500s, when an unknown printer took a galley of type and
           scrambled it to make a type specimen book. It has survived not only
           five centuries, but also the leap into electronic typesetting,
@@ -34,7 +34,7 @@ const page = (props: Props) => {
         </p>
         <p>
           Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
+          industry. Lorem Ipsum has been the industrys standard dummy text ever
           since the 1500s, when an unknown printer took a galley of type and
           scrambled it to make a type specimen book. It has survived not only
           five centuries, but also the leap into electronic typesetting,
@@ -48,4 +48,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;

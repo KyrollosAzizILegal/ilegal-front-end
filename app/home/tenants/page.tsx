@@ -4,7 +4,7 @@ import { setHeader } from "@/redux/services/header";
 import React from "react";
 import { useDispatch } from "react-redux";
 
-const page = () => {
+const Page = () => {
   const dispatch = useDispatch();
   dispatch(setHeader("Tenants"));
   return (
@@ -14,4 +14,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

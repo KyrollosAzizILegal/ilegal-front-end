@@ -3,7 +3,7 @@ import { setHeader } from "@/redux/services/header";
 import React from "react";
 import { useDispatch } from "react-redux";
 
-type Props = {};
+// type Props = {};
 
 const recentData = [
   { name: "Tenant Name", type: "Administration", lastViewed: "Date" },
@@ -15,9 +15,12 @@ const recentData = [
   { name: "Template Name", type: "Administration", lastViewed: "Date" },
 ];
 
-const page = (props: Props) => {
+const Page = (/**props: Props */) => {
   const dispatch = useDispatch();
-  dispatch(setHeader("Most Recent"));
+
+  React.useEffect(() => {
+    dispatch(setHeader("Most Recent"));
+  }, [dispatch]);
   return (
     <div className="bg-white p-6 rounded-lg shadow-md flex-grow">
       <h3 className="text-lg font-bold mb-4">Most Recent</h3>
@@ -43,4 +46,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;
