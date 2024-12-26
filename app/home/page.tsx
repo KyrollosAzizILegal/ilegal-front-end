@@ -11,6 +11,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import Link from "next/link";
 
 const sampleData = [
   { name: "Jan", created: 40, translation: 24, summarization: 20 },
@@ -60,9 +61,9 @@ const page = () => {
         <div className="bg-white text-black p-6 rounded-lg shadow-md">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-bold">Bills and Invoices</h3>
-            <a href="#" className="text-blue-600 text-sm hover:underline">
+            <Link href="/home/bills-and-invoices" className="text-blue-600 text-sm hover:underline">
               See all
-            </a>
+            </Link>
           </div>
           <div className="space-y-4">
             {["Client A", "Client B", "Client C", "Client A"].map(
@@ -92,9 +93,9 @@ const page = () => {
         <div className="bg-white text-black p-6 rounded-lg shadow-md">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-bold">Most Recent</h3>
-            <a href="#" className="text-blue-600 text-sm hover:underline">
+            <Link href="/home/most-recent" className="text-blue-600 text-sm hover:underline">
               See all
-            </a>
+            </Link>
           </div>
           <table className="w-full text-left text-sm">
             <thead>
@@ -126,9 +127,9 @@ const page = () => {
       <div className="bg-white text-black p-6 rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold">Tenants Analysis</h3>
-          <a href="#" className="text-blue-600 text-sm hover:underline">
+          <Link href="/home/tenants-analysis" className="text-blue-600 text-sm hover:underline">
             See all
-          </a>
+          </Link>
         </div>
         <div className=" rounded-lg p-6">
           <div className="grid grid-cols-3 gap-6">
@@ -146,7 +147,7 @@ const page = () => {
                         dataKey={label.toLowerCase().replace(" ", "")}
                         fill={
                           index === 0
-                            ? "#000000"
+                            ? "#114B7E"
                             : index === 1
                             ? "#1F88E4"
                             : "#DD1C55"
