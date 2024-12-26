@@ -18,7 +18,9 @@ import { Employee } from "@/types";
 import AddEmployeeModal from "./addEmployeeComponent";
 import { usePathname } from "next/navigation";
 
+
 export const EmployeesTable = () => {
+  
   const path = usePathname();
   const isPathRight = path === "/home/employees";
   const [page, setPage] = useState(1);

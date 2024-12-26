@@ -12,12 +12,12 @@ export default function RootLayout({
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col bg-gray-800">
+      <div className="flex-1 flex flex-col bg-deepBlue">
         {/* Navbar */}
         <Navbar />
 
         {/* Page Content */}
-        <main className="p-4 overflow-auto">{children}</main>
+        <main className="p-4 overflow-auto flex-grow flex">{children}</main>
       </div>
     </div>
   );

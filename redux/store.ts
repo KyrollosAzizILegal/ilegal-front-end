@@ -1,11 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { FetchBaseQueryError, setupListeners } from '@reduxjs/toolkit/query';
 import { api } from './services/api'; // Replace with your API service path
-
+import homeSlice from './services/header';
 export const store = configureStore({
   reducer: {
     // Add the generated reducer as a specific top-level slice
     [api.reducerPath]: api.reducer,
+    Home: homeSlice,
   },
   // Adding the api middleware enables caching, invalidation, polling, and other features of RTK Query
   middleware: (getDefaultMiddleware) =>

@@ -15,7 +15,9 @@ import DeleteTenantButton from "./DeleteTenantButton";
 import { Tenant } from "@/types";
 import { usePathname } from "next/navigation";
 
+
 export const TenantCards = () => {
+  
   const path = usePathname()
   const isPathRight = path === "/home/tenants"
   const [page, setPage] = useState(1);
