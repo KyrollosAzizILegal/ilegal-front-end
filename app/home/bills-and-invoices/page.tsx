@@ -2,6 +2,7 @@
 import { setHeader } from '@/redux/services/header';
 import React from 'react'
 import { useDispatch } from 'react-redux';
+import {Divider} from "@nextui-org/react";
 
 // type Props = {}
 
@@ -23,18 +24,26 @@ const Page = (/**props: Props */) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md flex-grow">
     <h3 className="text-lg font-bold mb-4">Bills and Invoices</h3>
+    <Divider/>
     <div className="space-y-4">
       {billsData.map((bill, index) => (
-        <div key={index} className="space-y-1">
-          <div className="flex justify-between text-sm">
-            <span className="font-medium">{bill.client}</span>
+        <div key={index} className="space-y-1 mt-5">
+          <div className="flex justify-between text-sm font-medium">
+            <span>{bill.client}</span>
             <span>
               {bill.paid}/{bill.total} egp
             </span>
           </div>
-          <div className="h-4 w-full bg-gray-200 rounded-full">
+          <div className="w-full mt-2 h-5 bg-gray-200 rounded-md relative">
             <div
-              className={`${bill.color} h-full rounded-full`}
+              className={`${bill.color} h-full rounded-md 
+               ${
+                        index % 2 === 0
+                          ? "bg-gradient-to-r from-deepBlue to-lightBlue"
+                          : "bg-gradient-to-r from-deepRed to-brightRed"
+                      }
+              `}
+              
               style={{ width: `${(bill.paid / bill.total) * 100}%` }}
             ></div>
           </div>

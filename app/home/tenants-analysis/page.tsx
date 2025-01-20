@@ -53,19 +53,25 @@ const Page = (/**props: Props */) => {
     dispatch(setHeader("Tenants Analysis"));
   }, [dispatch]);
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md flex-grow">
+    <div className="bg-white p-6 rounded-lg shadow-md flex-grow h-fit">
       <h3 className="text-lg font-bold mb-4">Tenants</h3>
       {tenantsData.map((tenant, index) => (
-        <div key={index} className="mb-6 bg-blue-100 p-4 rounded-lg shadow-md">
+        <div key={index} className="mb-6 p-4 rounded-lg shadow-md bg-gradient-to-b from-[#1F88E44A] to-[#114B7E4A]">
           <h4 className="text-blue-900 font-bold mb-4">{tenant.name}</h4>
           <ResponsiveContainer width="100%" height={150}>
             <BarChart data={tenant.data}>
               <XAxis dataKey="month" />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="created" fill="#114B7E" />
-              <Bar dataKey="translated" fill="#1F88E4" />
-              <Bar dataKey="summarized" fill="#DD1C55" />
+              <Bar dataKey="created" fill="#114B7E"
+              radius={20}
+              barSize={20} />
+              <Bar dataKey="translated" fill="#1F88E4" 
+              radius={20}
+              barSize={20}/>
+              <Bar dataKey="summarized" fill="#DD1C55" 
+              radius={20}
+              barSize={20}/>
             </BarChart>
           </ResponsiveContainer>
         </div>

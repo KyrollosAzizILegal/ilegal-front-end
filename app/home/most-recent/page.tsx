@@ -1,5 +1,6 @@
 'use client'
 import { setHeader } from "@/redux/services/header";
+import { Divider } from "@nextui-org/react";
 import React from "react";
 import { useDispatch } from "react-redux";
 
@@ -24,6 +25,7 @@ const Page = (/**props: Props */) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md flex-grow">
       <h3 className="text-lg font-bold mb-4">Most Recent</h3>
+      <Divider/>
       <table className="w-full text-left border-collapse">
         <thead>
           <tr className="border-b">

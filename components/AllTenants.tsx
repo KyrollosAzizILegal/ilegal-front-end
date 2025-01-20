@@ -7,6 +7,7 @@ import {
   Image,
   Pagination,
   Input,
+  Divider,
 } from "@nextui-org/react";
 import { useGetAllTenantsQuery } from "@/redux/services/api";
 import AddTenantModal from "./addTenantButton";
@@ -53,14 +54,12 @@ export const TenantCards = () => {
   const totalPages = data?.metaData?.totalPages || 1;
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 w-full bg-white p-5 rounded-xl">
       <div className="flex items-center justify-between">
-        <h3 className="mb-4 text-5xl font-semibold text-white">Tenants</h3>
-        {isPathRight &&<AddTenantModal />}
-      </div>
-
+        <h3 className="mb-4 text-5xl font-semibold text-black">Created Tenants</h3>
+        <div className="flex gap-5">
       {/* Search Input */}
-      {isPathRight && <div className="mb-4">
+      {isPathRight && <div>
         <Input
           isClearable
           placeholder="Search by tenant name..."
@@ -69,12 +68,26 @@ export const TenantCards = () => {
           onClear={() => setSearchTerm("")}
         />
       </div>}
+        {isPathRight &&<AddTenantModal />}
+      </div>
+      </div>
+
+      {/* <Divider/> */}
+      <div className="h-1 bg-gradient-to-r from-deepBlue to-lightBlue rounded-lg mb-6"></div>
+
 
       {/* Tenant Cards */}
-      <div className="gap-4 grid grid-cols-12">
+      <div className="gap-4 grid">
         {tenants.map((tenant: Tenant) => (
-          <Card key={tenant.id} className="col-span-12 sm:col-span-4 h-[300px]">
-            <CardHeader className="absolute z-10 top-1 flex-col !items-start">
+          <Card key={tenant.id} className="flex flex-row bg-gradient-to-r from-deepBlue to-lightBlue justify-between p-2">
+            <div className="flex items-center">
+            <Image
+              removeWrapper
+              alt={`Tenant ${tenant.id}`}
+              className="w-10 h-10 object-cover rounded-full"
+              src={tenant.imageUrl || "https://via.placeholder.com/300"}
+            />
+            <CardHeader className="flex-col !items-start">
               <p className="text-tiny text-white/60 uppercase font-bold">
                 Tenant Name
               </p>
@@ -82,13 +95,9 @@ export const TenantCards = () => {
                 {tenant.name}
               </h4>
             </CardHeader>
-            <Image
-              removeWrapper
-              alt={`Tenant ${tenant.id}`}
-              className="z-0 w-full h-full object-cover"
-              src={tenant.imageUrl || "https://via.placeholder.com/300"}
-            />
-            {isPathRight && <CardFooter className="absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
+            </div>
+            {isPathRight && 
+            <CardFooter className="flex justify-end">
               <div className="flex gap-2">
                 <UpdateTenantButton
                   tenantId={tenant.id}

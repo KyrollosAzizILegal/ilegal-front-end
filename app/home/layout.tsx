@@ -7,12 +7,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-screen flex-wrap sm:flex-nowrap">
+    <div className="flex h-screen flex-wrap sm:flex-nowrap bg-gradient-to-b from-lightBlue to-deepBlue">
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col bg-deepBlue">
+      <div className="flex-1 flex flex-col bg-deepBlue rounded-2xl mt-4">
         {/* Navbar */}
         <Navbar />
 

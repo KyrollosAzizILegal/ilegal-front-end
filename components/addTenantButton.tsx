@@ -97,7 +97,7 @@ const AddTenantModal = () => {
   return (
     <>
       <Button onPress={onOpen} color="primary">
-        Add Tenant
+        Create Tenant
       </Button>
       <Modal
         isOpen={isOpen}
