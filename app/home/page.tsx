@@ -3,7 +3,6 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { setHeader } from "@/redux/services/header";
 import { FaFileAlt, FaRegFile, FaUsers } from "react-icons/fa";
-import { useGetAllTenantsQuery } from "@/redux/services/api";
 import {
   BarChart,
   Bar,

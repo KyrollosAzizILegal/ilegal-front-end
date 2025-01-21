@@ -7,7 +7,6 @@ import {
   Image,
   Pagination,
   Input,
-  Divider,
 } from "@nextui-org/react";
 import { useGetAllTenantsQuery } from "@/redux/services/api";
 import AddTenantModal from "./addTenantButton";
