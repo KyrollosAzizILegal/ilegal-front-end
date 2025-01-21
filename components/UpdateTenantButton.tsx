@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useUpdateTenantMutation } from "@/redux/services/api";
+import { isFetchBaseQueryError } from "@/redux/store";
 
 // Validation schema
 const schema = yup.object().shape({
@@ -92,14 +93,18 @@ const UpdateTenantButton: React.FC<UpdateTenantButtonProps> = ({
                     isInvalid={!!errors.name}
                     errorMessage={errors.name?.message}
                   />
-                  {error && (
-                    <div className="mt-4">
-                      <p className="text-red-500 text-sm">
-                        An error occurred. Please try again.
-                      </p>
-                    </div>
-                  )}
                 </ModalBody>
+                {error && isFetchBaseQueryError(error) && (
+                  <div className="mt-4">
+                    <p className="text-red-500 text-sm">
+                      {error.data &&
+                      typeof error.data === "object" &&
+                      "message" in error.data
+                        ? (error.data as { message: string }).message
+                        : "An error occurred. Please try again."}
+                    </p>
+                  </div>
+                )}
                 <ModalFooter>
                   <Button color="danger" variant="flat" onPress={handleClose}>
                     Close

@@ -9,23 +9,25 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { useDeleteTenantMutation } from "@/redux/services/api";
+import { isFetchBaseQueryError } from "@/redux/store";
 
 type DeleteTenantButtonProps = {
   tenantId: string;
   tenantName: string;
 };
 
-const DeleteTenantButton: React.FC<DeleteTenantButtonProps> = ({ tenantId, tenantName }) => {
+const DeleteTenantButton: React.FC<DeleteTenantButtonProps> = ({
+  tenantId,
+  tenantName,
+}) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [deleteTenant, { isLoading }] = useDeleteTenantMutation();
-  const [error, setError] = useState<string | null>(null);
+  const [deleteTenant, { isLoading, error }] = useDeleteTenantMutation();
 
   const handleDelete = async () => {
     try {
       await deleteTenant(tenantId).unwrap();
       onOpenChange(); // Close modal after successful deletion
     } catch (err) {
-      setError("Failed to delete tenant. Please try again.");
       console.log(err);
     }
   };
@@ -46,9 +48,20 @@ const DeleteTenantButton: React.FC<DeleteTenantButtonProps> = ({ tenantId, tenan
                 Confirm Deletion
               </ModalHeader>
               <ModalBody>
-                Are you sure you want to delete tenant <b>{tenantName}</b>? This action cannot be undone.
-                {error && <p className="text-red-500 mt-4">{error}</p>}
+                Are you sure you want to delete tenant <b>{tenantName}</b>? This
+                action cannot be undone.
               </ModalBody>
+              {error && isFetchBaseQueryError(error) && (
+                <div className="mt-4">
+                  <p className="text-red-500 text-sm">
+                    {error.data &&
+                    typeof error.data === "object" &&
+                    "message" in error.data
+                      ? (error.data as { message: string }).message
+                      : "An error occurred. Please try again."}
+                  </p>
+                </div>
+              )}
               <ModalFooter>
                 <Button color="secondary" variant="flat" onPress={onClose}>
                   Cancel

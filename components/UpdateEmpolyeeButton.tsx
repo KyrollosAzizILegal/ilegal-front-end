@@ -13,10 +13,14 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useUpdateEmployeeMutation } from "@/redux/services/api";
+import { isFetchBaseQueryError } from "@/redux/store";
 
 // Define validation schema for the form
 const schema = yup.object().shape({
-  name: yup.string().required("Name is required").min(3, "Name must be at least 3 characters"),
+  name: yup
+    .string()
+    .required("Name is required")
+    .min(3, "Name must be at least 3 characters"),
 });
 
 type UpdateEmployeeButtonProps = {
@@ -24,7 +28,10 @@ type UpdateEmployeeButtonProps = {
   name: string;
 };
 
-const UpdateEmployeeButton: React.FC<UpdateEmployeeButtonProps> = ({ id, name }) => {
+const UpdateEmployeeButton: React.FC<UpdateEmployeeButtonProps> = ({
+  id,
+  name,
+}) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [updateEmployee, { isLoading, error }] = useUpdateEmployeeMutation();
 
@@ -62,7 +69,12 @@ const UpdateEmployeeButton: React.FC<UpdateEmployeeButtonProps> = ({ id, name })
       </Button>
 
       {/* Modal for updating employee name */}
-      <Modal isOpen={isOpen} onOpenChange={handleClose} isDismissable={false} placement="top-center">
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={handleClose}
+        isDismissable={false}
+        placement="top-center"
+      >
         <ModalContent>
           {() => (
             <>
@@ -81,19 +93,28 @@ const UpdateEmployeeButton: React.FC<UpdateEmployeeButtonProps> = ({ id, name })
                     errorMessage={errors.name?.message}
                   />
                   {/* Error message from API if update fails */}
-                  {error && (
-                    <div className="mt-4">
-                      <p className="text-red-500 text-sm">
-                        An error occurred. Please try again.
-                      </p>
-                    </div>
-                  )}
                 </ModalBody>
+                {error && isFetchBaseQueryError(error) && (
+                  <div className="mt-4">
+                    <p className="text-red-500 text-sm">
+                      {error.data &&
+                      typeof error.data === "object" &&
+                      "message" in error.data
+                        ? (error.data as { message: string }).message
+                        : "An error occurred. Please try again."}
+                    </p>
+                  </div>
+                )}
                 <ModalFooter>
                   <Button color="danger" variant="flat" onPress={handleClose}>
                     Close
                   </Button>
-                  <Button color="primary" type="submit" isDisabled={isLoading} isLoading={isLoading}>
+                  <Button
+                    color="primary"
+                    type="submit"
+                    isDisabled={isLoading}
+                    isLoading={isLoading}
+                  >
                     Update Employee
                   </Button>
                 </ModalFooter>
