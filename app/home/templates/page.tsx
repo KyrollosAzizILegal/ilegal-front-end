@@ -22,7 +22,7 @@ const Page = () => {
     dispatch(setHeader("Templates"));
   }, [dispatch]);
   return (
-    <div className="bg-white shadow-md rounded-lg p-6 mx-auto flex-grow">
+    <div className="bg-white shadow-md rounded-lg p-6 mx-auto flex-grow h-fit">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-800">

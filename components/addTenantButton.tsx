@@ -17,6 +17,7 @@ import ReactPhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { useCreateTenantMutation } from "@/redux/services/api";
 import { FaCamera, FaTrash } from "react-icons/fa";
+import { isFetchBaseQueryError } from "@/redux/store";
 
 // Define a custom type for the form data
 interface TenantFormData {
@@ -32,15 +33,24 @@ interface TenantFormData {
 
 // Validation schema
 const schema = yup.object().shape({
-  name: yup.string().required("Name is required").min(3, "Name must be at least 3 characters"),
+  name: yup
+    .string()
+    .required("Name is required")
+    .min(3, "Name must be at least 3 characters"),
   image: yup.mixed<File>().required("Image is required"),
   users: yup
     .array()
     .of(
       yup.object().shape({
         userName: yup.string().required("User name is required"), // Changed to userName
-        email: yup.string().required("User email is required").email("Invalid email format"),
-        password: yup.string().required("Password is required").min(6, "Password must be at least 6 characters"),
+        email: yup
+          .string()
+          .required("User email is required")
+          .email("Invalid email format"),
+        password: yup
+          .string()
+          .required("Password is required")
+          .min(6, "Password must be at least 6 characters"),
         phone: yup.string().required("Phone is required"),
       })
     )
@@ -62,7 +72,9 @@ const AddTenantModal = () => {
     formState: { errors },
   } = useForm<TenantFormData>({
     resolver: yupResolver(schema),
-    defaultValues: { users: [{ userName: "", email: "", password: "", phone: "" }] },
+    defaultValues: {
+      users: [{ userName: "", email: "", password: "", phone: "" }],
+    },
   });
 
   const onSubmit: SubmitHandler<TenantFormData> = async (data) => {
@@ -97,7 +109,7 @@ const AddTenantModal = () => {
   return (
     <>
       <Button onPress={onOpen} color="primary">
-        Add Tenant
+        Create Tenant
       </Button>
       <Modal
         isOpen={isOpen}
@@ -108,9 +120,14 @@ const AddTenantModal = () => {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Add Tenant</ModalHeader>
-              <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
-                <ModalBody>
+              <ModalHeader className="flex flex-col gap-1">
+                Add Tenant
+              </ModalHeader>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                encType="multipart/form-data"
+              >
+                <ModalBody className="flex flex-col gap-4">
                   <Input
                     {...register("name")}
                     label="Tenant Name"
@@ -122,15 +139,26 @@ const AddTenantModal = () => {
                   />
 
                   {/* Custom File Input for Image */}
-                  <div className="relative flex flex-col items-center mt-4">
-                    <label htmlFor="image-upload" className="relative flex items-center justify-center w-36 h-36 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 overflow-hidden">
+                  <div className="relative flex flex-col items-center">
+                    <label
+                      htmlFor="image-upload"
+                      className="relative flex items-center justify-center w-36 h-36 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 overflow-hidden"
+                    >
                       {imagePreview ? (
-                        <img src={imagePreview} alt="Selected" className="w-full h-full object-cover" />
+                        <img
+                          src={imagePreview}
+                          alt="Selected"
+                          className="w-full h-full object-cover"
+                        />
                       ) : (
                         <FaCamera className="text-4xl text-gray-500" />
                       )}
                       {imagePreview && (
-                        <Button type="button" className="absolute top-2 right-2 bg-white p-1 rounded-full text-red-500 hover:bg-gray-100" onClick={clearImage}>
+                        <Button
+                          type="button"
+                          className="absolute top-2 right-2 bg-white p-1 rounded-full text-red-500 hover:bg-gray-100"
+                          onClick={clearImage}
+                        >
                           <FaTrash />
                         </Button>
                       )}
@@ -142,18 +170,24 @@ const AddTenantModal = () => {
                       className="hidden"
                       onChange={handleFileChange}
                     />
-                    {errors.image && <p className="text-red-500 text-sm mt-2">{errors.image.message}</p>}
+                    {errors.image && (
+                      <p className="text-red-500 text-sm mt-2">
+                        {errors.image.message}
+                      </p>
+                    )}
                   </div>
 
                   {/* Users Array */}
                   {watch("users").map((_, index) => (
-                    <div key={index} className="mt-4">
+                    <div key={index} className="mt-4 flex flex-col gap-4"> 
                       <Input
                         {...register(`users.${index}.userName` as const)} // Updated to userName
                         label={`User ${index + 1} Username`}
                         placeholder="Enter user name"
                         variant="bordered"
-                        color={errors.users?.[index]?.userName ? "danger" : "default"}
+                        color={
+                          errors.users?.[index]?.userName ? "danger" : "default"
+                        }
                         isInvalid={!!errors.users?.[index]?.userName}
                         errorMessage={errors.users?.[index]?.userName?.message}
                       />
@@ -162,7 +196,9 @@ const AddTenantModal = () => {
                         label={`User ${index + 1} Email`}
                         placeholder="Enter user email"
                         variant="bordered"
-                        color={errors.users?.[index]?.email ? "danger" : "default"}
+                        color={
+                          errors.users?.[index]?.email ? "danger" : "default"
+                        }
                         isInvalid={!!errors.users?.[index]?.email}
                         errorMessage={errors.users?.[index]?.email?.message}
                       />
@@ -172,44 +208,71 @@ const AddTenantModal = () => {
                         placeholder="Enter password"
                         type="password"
                         variant="bordered"
-                        color={errors.users?.[index]?.password ? "danger" : "default"}
+                        color={
+                          errors.users?.[index]?.password ? "danger" : "default"
+                        }
                         isInvalid={!!errors.users?.[index]?.password}
                         errorMessage={errors.users?.[index]?.password?.message}
                       />
 
                       {/* Phone Input with Controller for each user */}
-                      <label className="block text-sm font-medium text-gray-700 mt-2">Phone</label>
-                      <Controller
+                        <label className="block text-sm font-medium text-gray-700 mt-2">
+                        Phone
+                        </label>
+                        <Controller
                         name={`users.${index}.phone` as const}
                         control={control}
                         render={({ field }) => (
                           <ReactPhoneInput
-                            {...field}
-                            country={"us"} // Set default country
-                            inputClass="w-full border rounded px-2 py-2 mt-1"
-                            dropdownClass="phone-dropdown"
-                            onChange={(phone) => field.onChange(phone)}
+                          {...field}
+                          country={"us"} // Set default country
+                          inputClass="w-full border flex-1 rounded px-2 py-2 mt-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          dropdownClass="w-full"
+                          buttonClass="bg-white border border-gray-300 rounded-l px-2 py-2"
+                          containerClass="w-full flex"
+                          onChange={(phone) => field.onChange(phone)}
                           />
                         )}
-                      />
-                      {errors.users?.[index]?.phone && (
-                        <p className="text-red-500 text-sm mt-1">{errors.users[index]?.phone?.message}</p>
+                        />
+                        {errors.users?.[index]?.phone && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.users[index]?.phone?.message}
+                        </p>
                       )}
                     </div>
                   ))}
 
                   {/* API Error Message */}
-                  {error && (
+                  {error && isFetchBaseQueryError(error) && (
                     <div className="mt-4">
-                      <p className="text-red-500 text-sm">An error occurred. Please try again.</p>
+                      <p className="text-red-500 text-sm">
+                        {error.data &&
+                        typeof error.data === "object" &&
+                        "message" in error.data
+                          ? (error.data as { message: string }).message
+                          : "An error occurred. Please try again."}
+                      </p>
                     </div>
                   )}
                 </ModalBody>
                 <ModalFooter>
-                  <Button color="danger" variant="flat" onPress={() => { reset(); setImagePreview(null); onClose(); }}>
+                  <Button
+                    color="danger"
+                    variant="flat"
+                    onPress={() => {
+                      reset();
+                      setImagePreview(null);
+                      onClose();
+                    }}
+                  >
                     Close
                   </Button>
-                  <Button color="primary" type="submit" isDisabled={isLoading} isLoading={isLoading}>
+                  <Button
+                    color="primary"
+                    type="submit"
+                    isDisabled={isLoading}
+                    isLoading={isLoading}
+                  >
                     Add Tenant
                   </Button>
                 </ModalFooter>

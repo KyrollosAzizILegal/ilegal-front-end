@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import Link from "next/link";
+import { Divider } from "@nextui-org/react";
 
 const sampleData = [
   { name: "Jan", created: 40, translation: 24, summarization: 20 },
@@ -30,7 +31,7 @@ const Page = () => {
     dispatch(setHeader("Home"));
   }, [dispatch]);
   return (
-    <div className=" min-h-screen space-y-8 text-white flex-grow">
+    <div className="min-h-screen space-y-8 text-white flex-grow">
       {/* Top Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {/* Card 1 */}
@@ -68,24 +69,27 @@ const Page = () => {
               See all
             </Link>
           </div>
+          <Divider/>
           <div className="space-y-4">
             {["Client A", "Client B", "Client C", "Client A"].map(
               (client, index) => (
                 <div key={index}>
-                  <p className="text-sm font-semibold">{client}</p>
-                  <div className="w-full mt-2 h-2 bg-gray-200 rounded-full relative">
+                  <div className="flex justify-between">
+                    <p className="text-sm font-semibold">{client}</p>
+                    <p className="text-sm text-gray-500 font-bold">
+                      {Math.floor((index + 1) * 20 * 10)}/1000 egp
+                    </p>
+                  </div>
+                  <div className="w-full mt-2 h-5 bg-gray-200 rounded-md relative">
                     <div
-                      className={`absolute top-0 left-0 h-2 ${
+                      className={`absolute top-0 left-0 h-5 rounded-md ${
                         index % 2 === 0
                           ? "bg-gradient-to-r from-deepBlue to-lightBlue"
                           : "bg-gradient-to-r from-deepRed to-brightRed"
-                      } rounded-full`}
+                      } `}
                       style={{ width: `${(index + 1) * 20}%` }}
                     />
                   </div>
-                  <p className="text-sm text-gray-500">
-                    {Math.floor((index + 1) * 20 * 10)}/1000 egp
-                  </p>
                 </div>
               )
             )}
@@ -100,6 +104,7 @@ const Page = () => {
               See all
             </Link>
           </div>
+          <Divider/>
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="text-gray-600 border-b">
@@ -134,14 +139,17 @@ const Page = () => {
             See all
           </Link>
         </div>
-        <div className=" rounded-lg p-6">
+        <div className=" rounded-lg p-6 bg-gradient-to-b from-[#1F88E44A] to-[#114B7E4A]">
+          <p>name</p>
+          <div className="w-full my-4 h-[2px] bg-gradient-to-r from-blue-700 to-lightBlue" />
+
           <div className="grid grid-cols-3 gap-6">
             {["Created Documents", "Translation", "Summarization"].map(
               (label, index) => (
                 <div key={index} className="text-center">
-                  <h5 className="text-blue-700 font-semibold mb-2">{label}</h5>
+                  <h5 className="text-black font-semibold mb-2">{label}</h5>
                   {/* Recharts Integration */}
-                  <ResponsiveContainer width="100%" height={150}>
+                  <ResponsiveContainer width="100%" height={150} >
                     <BarChart data={sampleData}>
                       <XAxis dataKey="name" />
                       <YAxis />
@@ -155,6 +163,8 @@ const Page = () => {
                             ? "#1F88E4"
                             : "#DD1C55"
                         }
+                        radius={20}
+                        barSize={20}
                       />
                     </BarChart>
                   </ResponsiveContainer>
