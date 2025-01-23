@@ -13,7 +13,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["SuperAdmin", "Tenants"], // Define your tag types here
+  tagTypes: ["SuperAdmin", "Tenants", "template"], // Define your tag types here
   endpoints: (builder) => ({
     // super admin
     createUser: builder.mutation({
@@ -108,20 +108,48 @@ export const api = createApi({
       }),
       invalidatesTags: ["Tenants"],
     }),
+    // templates endpoints
+    addTemplate: builder.mutation({
+      query: (templateData) => ({
+        url: "/pre-configured-template",
+        method: "POST",
+        body: templateData,
+      }),
+      invalidatesTags: ["template"],
+    }),
+    getTemplates: builder.query({
+      query: ({ page = 1, limit = 10 }) =>
+        `/pre-configured-template/admin/all?page=${page}&limit=${limit}`,
+      providesTags: ["template"],
+    }),
+    deleteTemplate: builder.mutation<void, string>({
+      query: (templateId) => ({
+        url: `/pre-configured-template/${templateId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["template"],
+    }),
   }),
 });
 
 export const {
+  // users
   useCreateUserMutation,
   useLoginMutation,
   useRequestPasswordResetMutation,
   useVerifyOtpMutation,
+  // employees
   useResetPassordMutation,
-  useGetAllTenantsQuery,
   useGetAllEmployeesQuery,
   useDeleteEmployeeMutation,
   useUpdateEmployeeMutation,
+  // tenants
   useCreateTenantMutation,
+  useGetAllTenantsQuery,
   useDeleteTenantMutation,
-  useUpdateTenantMutation
+  useUpdateTenantMutation,
+  // templates
+  useAddTemplateMutation,
+  useGetTemplatesQuery,
+  useDeleteTemplateMutation
 } = api;
