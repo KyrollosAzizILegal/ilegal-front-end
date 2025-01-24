@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import GlobalProviders from "@/components/globalProviders";
+import Script from 'next/script'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,9 +30,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <GlobalProviders>
-          {children}
-        </GlobalProviders>
+        <GlobalProviders>{children}</GlobalProviders>
+        <Script
+          src="https://cdn.ckbox.io/ckbox/2.6.1/ckbox.js"
+          crossOrigin="anonymous"
+        ></Script>
       </body>
     </html>
   );

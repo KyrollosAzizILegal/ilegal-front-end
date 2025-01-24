@@ -29,33 +29,36 @@ export function getToken(tokenName: string) {
   return null; // Return null if the token is not found
 }
 
- 
-export async function validateToken(token: string | undefined): Promise<boolean> {
-    if (!token) {
-      return false; // If the token is not provided, return false
-    }
-  
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/validate-token`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      // Check if the response is OK (status code 200)
-      if (!response.ok) {
-        console.error('Failed to validate token:', response.statusText);
-        return false; // If the response is not OK, return false
-      }
-  
-      const data = await response.json(); // Parse the response as JSON
-      return data.validate === true; // Return the validate property if true, otherwise false
-  
-    } catch (error) {
-      console.error('Error during token validation:', error);
-      return false; // If there’s an error (e.g., network issues), return false
-    }
+export async function validateToken(
+  token: string | undefined
+): Promise<boolean> {
+  if (!token) {
+    return false; // If the token is not provided, return false
   }
-  
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/auth/validate-token`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    // Check if the response is OK (status code 200)
+    if (!response.ok) {
+      console.error("Failed to validate token:", response.statusText);
+      return false; // If the response is not OK, return false
+    }
+
+    const data = await response.json(); // Parse the response as JSON
+    return data.validate === true; // Return the validate property if true, otherwise false
+  } catch (error) {
+    console.error("Error during token validation:", error);
+    return false; // If there’s an error (e.g., network issues), return false
+  }
+}
+
