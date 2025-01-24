@@ -60,7 +60,7 @@ const schema = yup.object().shape({
 
 const AddTenantModal = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [createTenant, { isLoading, error, isSuccess }] =
+  const [createTenant, { isLoading, error }] =
     useCreateTenantMutation();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 

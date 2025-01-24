@@ -29,7 +29,7 @@ type FormData = yup.InferType<typeof schema>;
 
 export default function LoginForm() {
   const router = useRouter();
-  const [resetPassword, { isLoading, error, isSuccess }] =
+  const [resetPassword, { isLoading, error }] =
     useResetPassordMutation(); // Use login mutation hook
 
   const {
@@ -45,6 +45,7 @@ export default function LoginForm() {
       const response = await resetPassword(data).unwrap(); // Unwrap to get the result directly
       // Assuming the response contains a token that needs to be stored in cookies
       // setToken('token', response.)
+      toast.success("Password reset link sent successfully.");
       console.log(response);
       router.push("/"); // Navigate to the home page upon successful login
     } catch (err) {
@@ -52,13 +53,13 @@ export default function LoginForm() {
     }
   };
 
-  error &&
-    isFetchBaseQueryError(error) &&
-    (error.data && typeof error.data === "object" && "message" in error.data
-      ? toast.error((error.data as { message: string }).message)
-      : toast.error("An error occurred. Please try again."));
-
-  isSuccess && toast.success("Password reset link sent successfully.");
+  if (error && isFetchBaseQueryError(error)) {
+    const errorMessage =
+      error.data && typeof error.data === "object" && "message" in error.data
+        ? (error.data as { message: string }).message
+        : "An error occurred. Please try again.";
+    toast.error(errorMessage);
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

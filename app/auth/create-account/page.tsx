@@ -31,7 +31,7 @@ type FormData = yup.InferType<typeof schema>;
 // Helper function to check if the error is a FetchBaseQueryError
 
 export default function CreateUserForm() {
-  const [createUser, { isLoading, error, isSuccess }] = useCreateUserMutation();
+  const [createUser, { isLoading, error }] = useCreateUserMutation();
 
   const {
     register,
@@ -46,18 +46,22 @@ export default function CreateUserForm() {
     try {
       await createUser(formData).unwrap();
       console.log("User created successfully");
+     toast.success("Account created successfully.");
       reset(); // Reset the form after successful submission
     } catch (err) {
       console.error("Failed to create user:", err);
     }
   };
 
-    error &&
-      isFetchBaseQueryError(error) &&
-      (error.data && typeof error.data === "object" && "message" in error.data
-        ? toast.error((error.data as { message: string }).message)
-        : toast.error("An error occurred. Please try again."));
-    isSuccess && toast.success("Account created successfully.");
+  if (error && isFetchBaseQueryError(error)) {
+    const errorMessage =
+      error.data &&
+      typeof error.data === "object" &&
+      "message" in error.data
+        ? (error.data as { message: string }).message
+        : "An error occurred. Please try again.";
+    toast.error(errorMessage);
+  }
 
 
   return (

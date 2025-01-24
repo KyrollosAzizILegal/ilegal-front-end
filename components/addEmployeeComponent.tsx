@@ -38,7 +38,7 @@ type FormData = yup.InferType<typeof schema>;
 
 const AddEmployeeModal = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [createEmployee, { isLoading, error, isSuccess }] =
+  const [createEmployee, { isLoading, error }] =
     useCreateUserMutation();
 
   const {

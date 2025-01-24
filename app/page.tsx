@@ -29,7 +29,7 @@ const schema = yup.object().shape({
 type FormData = yup.InferType<typeof schema>;
 
 export default function LoginForm() {
-  const [login, { isLoading, error, isSuccess }] = useLoginMutation(); // Use login mutation hook
+  const [login, { isLoading, error }] = useLoginMutation(); // Use login mutation hook
 
   const {
     register,

@@ -23,7 +23,7 @@ type OTPFormData = yup.InferType<typeof schema>;
 
 export default function OTPVerificationForm() {
   const router = useRouter();
-  const [verifyOtp, { isLoading, error, isSuccess }] = useVerifyOtpMutation(); // Use the OTP verification mutation hook
+  const [verifyOtp, { isLoading, error }] = useVerifyOtpMutation(); // Use the OTP verification mutation hook
 
   const {
     control,
@@ -37,6 +37,7 @@ export default function OTPVerificationForm() {
     try {
       console.log("OTP Data:", data);
       const response = await verifyOtp({ otp: data.otp }).unwrap();
+      toast.success("OTP verified successfully.");
       console.log(response);
       router.push("/auth/reset-password");
     } catch (err) {
@@ -45,13 +46,16 @@ export default function OTPVerificationForm() {
   };
 
 
-    error &&
-      isFetchBaseQueryError(error) &&
-      (error.data && typeof error.data === "object" && "message" in error.data
-        ? toast.error((error.data as { message: string }).message)
-        : toast.error("An error occurred. Please try again."));
+  if (error && isFetchBaseQueryError(error)) {
+    const errorMessage =
+      error.data &&
+      typeof error.data === "object" &&
+      "message" in error.data
+        ? (error.data as { message: string }).message
+        : "An error occurred. Please try again.";
+    toast.error(errorMessage);
+  }
 
-    isSuccess && toast.success("OTP verified successfully.");
   
 
   return (

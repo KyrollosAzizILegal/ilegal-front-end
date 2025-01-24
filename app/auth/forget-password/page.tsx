@@ -23,7 +23,7 @@ type ResetFormData = yup.InferType<typeof schema>;
 
 export default function ResetPasswordForm() {
   const router = useRouter();
-  const [requestPasswordReset, { isLoading, error, isSuccess }] =
+  const [requestPasswordReset, { isLoading, error }] =
     useRequestPasswordResetMutation();
 
   const {
@@ -37,6 +37,7 @@ export default function ResetPasswordForm() {
   const onSubmit: SubmitHandler<ResetFormData> = async (data) => {
     try {
       const response = await requestPasswordReset(data).unwrap(); // Unwrap to handle the result directly
+      toast.success("Password reset link sent successfully.");
       console.log(response);
       router.push("/auth/otp");
     } catch (err) {
@@ -44,13 +45,16 @@ export default function ResetPasswordForm() {
     }
   };
 
-  error &&
-    isFetchBaseQueryError(error) &&
-    (error.data && typeof error.data === "object" && "message" in error.data
-      ? toast.error((error.data as { message: string }).message)
-      : toast.error("An error occurred. Please try again."));
+  if (error && isFetchBaseQueryError(error)) {
+    const errorMessage =
+      error.data &&
+      typeof error.data === "object" &&
+      "message" in error.data
+        ? (error.data as { message: string }).message
+        : "An error occurred. Please try again.";
+    toast.error(errorMessage);
+  }
 
-  isSuccess && toast.success("Password reset link sent successfully.");
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
