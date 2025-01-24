@@ -18,6 +18,7 @@ import "react-phone-input-2/lib/style.css";
 import { useCreateTenantMutation } from "@/redux/services/api";
 import { FaCamera, FaTrash } from "react-icons/fa";
 import { isFetchBaseQueryError } from "@/redux/store";
+import toast from "react-hot-toast";
 
 // Define a custom type for the form data
 interface TenantFormData {
@@ -59,7 +60,8 @@ const schema = yup.object().shape({
 
 const AddTenantModal = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [createTenant, { isLoading, error }] = useCreateTenantMutation();
+  const [createTenant, { isLoading, error, isSuccess }] =
+    useCreateTenantMutation();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const {
@@ -85,6 +87,7 @@ const AddTenantModal = () => {
 
     try {
       await createTenant(formData).unwrap();
+      toast.success("Tenant created successfully.");
       reset();
       setImagePreview(null); // Clear image preview on success
       onOpenChange();
@@ -105,6 +108,18 @@ const AddTenantModal = () => {
     setValue("image", null as unknown as File); // Workaround to reset the form field
     setImagePreview(null);
   };
+
+  if (error && isFetchBaseQueryError(error)) {
+    const errorMessage =
+      error.data &&
+      typeof error.data === "object" &&
+      "message" in error.data
+        ? (error.data as { message: string }).message
+        : "An error occurred. Please try again.";
+    toast.error(errorMessage);
+  }
+
+
 
   return (
     <>
@@ -179,7 +194,7 @@ const AddTenantModal = () => {
 
                   {/* Users Array */}
                   {watch("users").map((_, index) => (
-                    <div key={index} className="mt-4 flex flex-col gap-4"> 
+                    <div key={index} className="mt-4 flex flex-col gap-4">
                       <Input
                         {...register(`users.${index}.userName` as const)} // Updated to userName
                         label={`User ${index + 1} Username`}
@@ -216,25 +231,25 @@ const AddTenantModal = () => {
                       />
 
                       {/* Phone Input with Controller for each user */}
-                        <label className="block text-sm font-medium text-gray-700 mt-2">
+                      <label className="block text-sm font-medium text-gray-700 mt-2">
                         Phone
-                        </label>
-                        <Controller
+                      </label>
+                      <Controller
                         name={`users.${index}.phone` as const}
                         control={control}
                         render={({ field }) => (
                           <ReactPhoneInput
-                          {...field}
-                          country={"us"} // Set default country
-                          inputClass="w-full border flex-1 rounded px-2 py-2 mt-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          dropdownClass="w-full"
-                          buttonClass="bg-white border border-gray-300 rounded-l px-2 py-2"
-                          containerClass="w-full flex"
-                          onChange={(phone) => field.onChange(phone)}
+                            {...field}
+                            country={"us"} // Set default country
+                            inputClass="w-full border flex-1 rounded px-2 py-2 mt-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            dropdownClass="w-full"
+                            buttonClass="bg-white border border-gray-300 rounded-l px-2 py-2"
+                            containerClass="w-full flex"
+                            onChange={(phone) => field.onChange(phone)}
                           />
                         )}
-                        />
-                        {errors.users?.[index]?.phone && (
+                      />
+                      {errors.users?.[index]?.phone && (
                         <p className="text-red-500 text-sm mt-1">
                           {errors.users[index]?.phone?.message}
                         </p>
@@ -243,17 +258,6 @@ const AddTenantModal = () => {
                   ))}
 
                   {/* API Error Message */}
-                  {error && isFetchBaseQueryError(error) && (
-                    <div className="mt-4">
-                      <p className="text-red-500 text-sm">
-                        {error.data &&
-                        typeof error.data === "object" &&
-                        "message" in error.data
-                          ? (error.data as { message: string }).message
-                          : "An error occurred. Please try again."}
-                      </p>
-                    </div>
-                  )}
                 </ModalBody>
                 <ModalFooter>
                   <Button

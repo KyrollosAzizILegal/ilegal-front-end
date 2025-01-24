@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import GlobalProviders from "@/components/globalProviders";
-import Script from 'next/script'
+import Script from "next/script";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -35,6 +36,7 @@ export default function RootLayout({
           src="https://cdn.ckbox.io/ckbox/2.6.1/ckbox.js"
           crossOrigin="anonymous"
         ></Script>
+        <Toaster position="bottom-right" />
       </body>
     </html>
   );

@@ -7,6 +7,7 @@ import { Input, Button } from "@nextui-org/react";
 import { useRouter } from "next/navigation"; // Import Next.js router
 import { useResetPassordMutation } from "@/redux/services/api"; // Import the login mutation hook
 import { isFetchBaseQueryError } from "@/redux/store";
+import toast from "react-hot-toast";
 
 // Define the validation schema using Yup
 const schema = yup.object().shape({
@@ -28,7 +29,8 @@ type FormData = yup.InferType<typeof schema>;
 
 export default function LoginForm() {
   const router = useRouter();
-  const [resetPassword, { isLoading, error }] = useResetPassordMutation(); // Use login mutation hook
+  const [resetPassword, { isLoading, error, isSuccess }] =
+    useResetPassordMutation(); // Use login mutation hook
 
   const {
     register,
@@ -49,6 +51,14 @@ export default function LoginForm() {
       console.error("Login failed:", err); // Error will be handled in the UI
     }
   };
+
+  error &&
+    isFetchBaseQueryError(error) &&
+    (error.data && typeof error.data === "object" && "message" in error.data
+      ? toast.error((error.data as { message: string }).message)
+      : toast.error("An error occurred. Please try again."));
+
+  isSuccess && toast.success("Password reset link sent successfully.");
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -103,17 +113,6 @@ export default function LoginForm() {
         </form>
 
         {/* API Error Message */}
-        {error && isFetchBaseQueryError(error) && (
-          <div className="mt-4">
-            <p className="text-red-500 text-sm">
-              {error.data &&
-              typeof error.data === "object" &&
-              "message" in error.data
-                ? (error.data as { message: string }).message
-                : "An error occurred. Please try again."}
-            </p>
-          </div>
-        )}
 
         {/* Link to Create Account */}
         {/* <div className="mt-4 text-center">

@@ -1,3 +1,4 @@
+import { Template } from "@/types";
 import { getToken } from "@/utils";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -129,6 +130,18 @@ export const api = createApi({
       }),
       invalidatesTags: ["template"],
     }),
+    getTemplateById: builder.query<Template, string>({
+      query: (id) => `/pre-configured-template/admin/one/${id}`,
+      providesTags: ["template"],
+    }),
+    updateTemplate: builder.mutation<Template, { id: string; attachmentFileUrl: string }>({
+      query: ({ id, attachmentFileUrl }) => ({
+        url: `/pre-configured-template/${id}`,
+        method: "PATCH",
+        body: { attachmentFileUrl },
+      }),
+      invalidatesTags: ["template"],
+    }),
   }),
 });
 
@@ -151,5 +164,7 @@ export const {
   // templates
   useAddTemplateMutation,
   useGetTemplatesQuery,
-  useDeleteTemplateMutation
+  useDeleteTemplateMutation,
+  useGetTemplateByIdQuery,
+  useUpdateTemplateMutation
 } = api;

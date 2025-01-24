@@ -16,6 +16,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useCreateUserMutation } from "@/redux/services/api";
 import { isFetchBaseQueryError } from "@/redux/store";
+import toast from "react-hot-toast";
 
 // Validation schema
 const schema = yup.object().shape({
@@ -37,7 +38,8 @@ type FormData = yup.InferType<typeof schema>;
 
 const AddEmployeeModal = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [createEmployee, { isLoading, error }] = useCreateUserMutation();
+  const [createEmployee, { isLoading, error, isSuccess }] =
+    useCreateUserMutation();
 
   const {
     register,
@@ -51,12 +53,21 @@ const AddEmployeeModal = () => {
   const onSubmit = async (data: FormData) => {
     try {
       await createEmployee(data).unwrap();
+      toast.success("Employee added successfully.");
       reset();
       onOpenChange();
     } catch (error) {
       console.error("Failed to create employee:", error);
     }
   };
+
+  if (error && isFetchBaseQueryError(error)) {
+    const errorMessage =
+      error.data && typeof error.data === "object" && "message" in error.data
+        ? (error.data as { message: string }).message
+        : "An error occurred. Please try again.";
+    toast.error(errorMessage);
+  }
 
   return (
     <>
@@ -106,17 +117,6 @@ const AddEmployeeModal = () => {
                     errorMessage={errors.password?.message}
                   />
                   {/* API Error Message */}
-                  {error && isFetchBaseQueryError(error) && (
-                    <div className="mt-4">
-                      <p className="text-red-500 text-sm">
-                        {error.data &&
-                        typeof error.data === "object" &&
-                        "message" in error.data
-                          ? (error.data as { message: string }).message
-                          : "An error occurred. Please try again."}
-                      </p>
-                    </div>
-                  )}
                 </ModalBody>
                 <ModalFooter>
                   <Button color="danger" variant="flat" onPress={onClose}>

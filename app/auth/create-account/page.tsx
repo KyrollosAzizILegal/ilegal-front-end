@@ -7,6 +7,7 @@ import { Input, Button } from "@nextui-org/react";
 import Link from "next/link"; // Import the Link component from Next.js
 import { useCreateUserMutation } from "@/redux/services/api";
 import { isFetchBaseQueryError } from "@/redux/store";
+import toast from "react-hot-toast";
 
 // Define the validation schema using Yup
 const schema = yup.object().shape({
@@ -21,14 +22,13 @@ const schema = yup.object().shape({
   password: yup
     .string()
     .required("Password is required")
-    .min(6, "Password must be at least 6 characters")
+    .min(6, "Password must be at least 6 characters"),
 });
 
 // Create a type from the Yup schema
 type FormData = yup.InferType<typeof schema>;
 
 // Helper function to check if the error is a FetchBaseQueryError
-
 
 export default function CreateUserForm() {
   const [createUser, { isLoading, error, isSuccess }] = useCreateUserMutation();
@@ -51,6 +51,14 @@ export default function CreateUserForm() {
       console.error("Failed to create user:", err);
     }
   };
+
+    error &&
+      isFetchBaseQueryError(error) &&
+      (error.data && typeof error.data === "object" && "message" in error.data
+        ? toast.error((error.data as { message: string }).message)
+        : toast.error("An error occurred. Please try again."));
+    isSuccess && toast.success("Account created successfully.");
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -120,24 +128,6 @@ export default function CreateUserForm() {
         </form>
 
         {/* API Error Message */}
-        {error && isFetchBaseQueryError(error) && (
-          <div className="mt-4">
-            <p className="text-red-500 text-sm">
-              {error.data &&
-              typeof error.data === "object" &&
-              "message" in error.data
-                ? (error.data as { message: string }).message
-                : "An error occurred. Please try again."}
-            </p>
-          </div>
-        )}
-
-        {/* Success Message */}
-        {isSuccess && (
-          <div className="mt-4">
-            <p className="text-green-500 text-sm">User created successfully!</p>
-          </div>
-        )}
 
         {/* Link to Login Page */}
         <div className="mt-4 text-center">

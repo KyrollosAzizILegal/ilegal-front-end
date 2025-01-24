@@ -8,6 +8,7 @@ import { Button } from "@nextui-org/react";
 import { useRouter } from "next/navigation"; // Import Next.js router
 import { useVerifyOtpMutation } from "@/redux/services/api"; // Import your OTP verification mutation hook
 import { isFetchBaseQueryError } from "@/redux/store";
+import toast from "react-hot-toast";
 
 // Define the validation schema using Yup
 const schema = yup.object().shape({
@@ -22,7 +23,7 @@ type OTPFormData = yup.InferType<typeof schema>;
 
 export default function OTPVerificationForm() {
   const router = useRouter();
-  const [verifyOtp, { isLoading, error }] = useVerifyOtpMutation(); // Use the OTP verification mutation hook
+  const [verifyOtp, { isLoading, error, isSuccess }] = useVerifyOtpMutation(); // Use the OTP verification mutation hook
 
   const {
     control,
@@ -36,12 +37,22 @@ export default function OTPVerificationForm() {
     try {
       console.log("OTP Data:", data);
       const response = await verifyOtp({ otp: data.otp }).unwrap();
-      console.log(response)
-      router.push('/auth/reset-password');
+      console.log(response);
+      router.push("/auth/reset-password");
     } catch (err) {
       console.error("OTP verification failed:", err); // Handle OTP verification error
     }
   };
+
+
+    error &&
+      isFetchBaseQueryError(error) &&
+      (error.data && typeof error.data === "object" && "message" in error.data
+        ? toast.error((error.data as { message: string }).message)
+        : toast.error("An error occurred. Please try again."));
+
+    isSuccess && toast.success("OTP verified successfully.");
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -61,7 +72,7 @@ export default function OTPVerificationForm() {
                   onChange={field.onChange}
                   numInputs={6}
                   shouldAutoFocus
-                  containerStyle={'flex justify-between'}
+                  containerStyle={"flex justify-between"}
                   inputStyle={{
                     width: "2.5rem",
                     height: "2.5rem",
@@ -79,7 +90,6 @@ export default function OTPVerificationForm() {
                       }}
                     />
                   )}
-                  
                 />
               )}
             />
@@ -101,17 +111,6 @@ export default function OTPVerificationForm() {
         </form>
 
         {/* API Error Message */}
-        {error && isFetchBaseQueryError(error) && (
-          <div className="mt-4">
-            <p className="text-red-500 text-sm">
-              {error.data &&
-              typeof error.data === "object" &&
-              "message" in error.data
-                ? (error.data as { message: string }).message
-                : "An error occurred. Please try again."}
-            </p>
-          </div>
-        )}
 
         {/* Link to Resend OTP */}
         {/* <div className="mt-4 text-center">

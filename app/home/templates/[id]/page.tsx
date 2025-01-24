@@ -1,9 +1,7 @@
-import { Editor } from "@/components/ckeditor/Editor";
+import { Template } from "@/components/templates/template";
 import React from "react";
 
-// type Props = {};
-
-const Page = (/**props: Props */) => {
+const Page = () => {
   return (
     <div className="bg-white shadow-lg rounded-lg mx-auto p-6 flex-1">
       {/* Header */}
@@ -13,9 +11,7 @@ const Page = (/**props: Props */) => {
       <div className="h-1 bg-gradient-to-r from-deepBlue to-lightBlue rounded-lg mb-6"></div>
 
       {/* Content */}
-      <div className="text-gray-700 text-base leading-relaxed space-y-4">
-        <Editor/>
-      </div>
+      <Template/>
     </div>
   );
 };

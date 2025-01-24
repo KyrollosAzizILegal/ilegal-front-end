@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import { Dispatch, SetStateAction, useRef } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { DecoupledEditor } from "ckeditor5";
 
@@ -9,7 +9,7 @@ import "ckeditor5-premium-features/ckeditor5-premium-features.css";
 import "./editor.css";
 import { config } from "./config";
 
-export function Editor() {
+export function Editor({setEditor , data}: {setEditor: Dispatch<SetStateAction<DecoupledEditor | null>>, data: string}) {
   const editorContainerRef = useRef(null);
   const editorToolbarRef = useRef(null);
   const editorRef = useRef(null);
@@ -33,11 +33,8 @@ export function Editor() {
                     editorToolbarRef.current.appendChild(
                       editor.ui.view.toolbar.element
                     );
-
-                    
-                  }}
-                  onAfterDestroy={() => {
-                    
+                    editor.setData(data);
+                    setEditor(editor);
                   }}
                   editor={DecoupledEditor}
                   config={editorConfig}
