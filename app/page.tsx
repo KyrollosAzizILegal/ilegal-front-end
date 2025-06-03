@@ -29,7 +29,7 @@ const schema = yup.object().shape({
 type FormData = yup.InferType<typeof schema>;
 
 export default function LoginForm() {
-  const [login, { isLoading, error }] = useLoginMutation(); // Use login mutation hook
+  const [login, { isLoading }] = useLoginMutation(); // Use login mutation hook
 
   const {
     register,
@@ -41,27 +41,25 @@ export default function LoginForm() {
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
-      const response = await login(data).unwrap(); // Unwrap to get the result directly
-      // Assuming the response contains a token that needs to be stored in cookies
-      // setToken('token', response.)
-      console.log(response);
-      // Store token in cookies for 7 days
+      const response = await login(data).unwrap();
       toast.success("Login successful.");
       setToken("token", response.access_token, 7);
-      // Navigate to the home page upon successful login
-      window.location.reload(); // Navigate to the home page upon successful login
+      window.location.reload();
     } catch (err) {
-      console.error("Login failed:", err); // Error will be handled in the UI
+      console.error("Login failed:", err);
+      if (isFetchBaseQueryError(err)) {
+        if ('data' in err) {
+          toast.error('Invalid email or password');
+        } else {
+          toast.error('Network error occurred');
+        }
+      } else {
+        // Handle other types of errors
+        toast.error('An unexpected error occurred');
+      }
     }
   };
 
-  if (error && isFetchBaseQueryError(error)) {
-    const errorMessage =
-      error.data && typeof error.data === "object" && "message" in error.data
-        ? (error.data as { message: string }).message
-        : "An error occurred. Please try again.";
-    toast.error(errorMessage);
-  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

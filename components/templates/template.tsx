@@ -1,17 +1,18 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { Editor } from "../ckeditor/Editor";
+import React, { useEffect } from "react";
+import { TiptapEditor } from "../ckeditor/Editor";
 import { useParams } from "next/navigation";
 import {
   useGetTemplateByIdQuery,
   useUpdateTemplateMutation,
 } from "@/redux/services/api";
-import { DecoupledEditor } from "ckeditor5";
 import { Button, Spinner } from "@nextui-org/react";
 import toast from "react-hot-toast";
 import { isFetchBaseQueryError } from "@/redux/store";
+import { useTipTapEditor } from "../ckeditor/config";
 
 export const Template = () => {
+  
   const { id } = useParams() as { id: string };
   const {
     data: template,
@@ -19,6 +20,13 @@ export const Template = () => {
     isLoading,
     isSuccess,
   } = useGetTemplateByIdQuery(id);
+  const editor = useTipTapEditor(template?.attachmentFileUrl);
+
+  useEffect(() => {
+    if (template) {
+      editor?.commands.setContent(template.attachmentFileUrl);
+    }
+  }, [template, editor]);
   const [
     updateTemplate,
     {
@@ -27,7 +35,6 @@ export const Template = () => {
       isSuccess: isUpdateSuccess,
     },
   ] = useUpdateTemplateMutation();
-  const [editor, setEditor] = useState<DecoupledEditor | null>(null);
 
   // Handle toasts for update success
   useEffect(() => {
@@ -60,9 +67,8 @@ export const Template = () => {
   return (
     <div className="text-gray-700 text-base leading-relaxed space-y-4">
       {isSuccess && (
-        <Editor
-          data={template?.attachmentFileUrl as string}
-          setEditor={setEditor}
+        <TiptapEditor
+          editor={editor}
         />
       )}
       <Button
@@ -72,7 +78,7 @@ export const Template = () => {
           if (editor) {
             updateTemplate({
               id,
-              attachmentFileUrl: editor.getData(),
+              attachmentFileUrl: editor.getHTML(),
             }).unwrap();
           }
         }}
