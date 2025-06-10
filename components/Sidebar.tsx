@@ -3,21 +3,12 @@
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import React from "react";
-import { AiFillSignature } from "react-icons/ai";
-import { BsTranslate } from "react-icons/bs";
 import {
   FaHome,
-  FaFileAlt,
   FaUsers,
   FaFileContract,
-  //   FaCog,
-  //   FaPen,
 } from "react-icons/fa";
-import { GiInjustice } from "react-icons/gi";
 import { RiOrganizationChart } from "react-icons/ri";
-// import { BsTranslate } from "react-icons/bs";
-// import { AiFillSignature } from "react-icons/ai";
-// import { GiInjustice } from "react-icons/gi";
 
 const navLinks = [
   {
@@ -41,29 +32,7 @@ const navLinks = [
     // <FaPen className="text-2xl" />
     ,
     path: "/home/templates",
-  },
-    {
-      name: "Summarization",
-      icon: <FaFileAlt className="text-2xl"/>
-      // <FaCog className="text-2xl" />
-      ,
-      path: "/dashboard/summarization",
-    },
-    {
-      name: "Translation",
-      icon: <BsTranslate className="text-2xl" />,
-      path: "/dashboard/translation",
-    },
-    {
-      name: "Sign Document",
-      icon: <AiFillSignature  className="text-2xl" />,
-      path: "/dashboard/sign-document",
-    },
-    {
-      name: "Jurisdiction",
-      icon: <GiInjustice className="text-2xl" />,
-      path: "/dashboard/jurisdiction",
-    },
+  }
 ];
 
 const Sidebar = () => {

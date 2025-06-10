@@ -77,7 +77,7 @@ export const AddTemplate = () => {
         attachmentFileUrl: "<h1>make your template</h1>",
       }).unwrap();
       console.log("Template successfully created!", response);
-      router.push(`/home/templates/${response.id}`);
+      router.push(`/home/templates/${response.data.id}`);
     } catch (err) {
       console.error("Failed to create template:", err); // Error handled in the toast above
     }
